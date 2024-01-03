@@ -113,7 +113,7 @@ h1 {
     margin-bottom: 15px;
 }
 
-.endorsment-card {
+.endorsement-card {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
@@ -123,7 +123,7 @@ h1 {
     margin-bottom: 12px;
 }
 
-.endorsment-card-to {
+.endorsement-card-to {
     color: #1B1924;
     font-family: Inter;
     font-size: 14px;
@@ -133,7 +133,7 @@ h1 {
 
 }
 
-.endorsment-card-text {
+.endorsement-card-text {
     color: #1B1924;
     font-family: Inter;
     font-size: 14px;
@@ -143,7 +143,7 @@ h1 {
 
 }
 
-.endorsment-card-footer {
+.endorsement-card-footer {
     display: flex;
     justify-content: space-between;
     flex-grow: 1;
@@ -156,7 +156,7 @@ h1 {
     line-height: normal;
 }
 
-.endorsment-card-like:before {
+.endorsement-card-like:before {
     content: url('assets/heart.svg');
     margin-right: 2px;
     color: black;
