@@ -12,7 +12,7 @@ html, body {
 
     background: #1B1924;
     color: white;
-
+    user-select: none;
     font-family: "Inter", sans-serif;
 }
 
@@ -53,7 +53,7 @@ h1 {
 
 #form input, #form textarea {
     background: #444059;
-    color: #8F8F8F;
+    color: white;
 
     padding: 12px 16px;
     border: 1px solid #444059;
@@ -70,6 +70,10 @@ h1 {
 #form > textarea {
     resize: none;
     min-height: 110px;
+}
+
+#form > textarea::placeholder, #form input::placeholder {
+    color: #8F8F8F;
 }
 
 #form #input-wrapper {
@@ -115,16 +119,17 @@ h1 {
 
 .endorsement-card {
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
     gap: 10px;
     background: white;
+    border: 2px solid white;
     padding: 14px;
     color: #1B1924;
     margin-bottom: 12px;
+    transition: 0.25s ease-in-out;
 }
 
 .endorsement-card-to {
-    color: #1B1924;
     font-family: Inter;
     font-size: 14px;
     font-style: normal;
@@ -134,7 +139,6 @@ h1 {
 }
 
 .endorsement-card-text {
-    color: #1B1924;
     font-family: Inter;
     font-size: 14px;
     font-style: normal;
@@ -148,7 +152,6 @@ h1 {
     justify-content: space-between;
     flex-grow: 1;
 
-    color: #1B1924;
     font-family: Inter;
     font-size: 14px;
     font-style: normal;
@@ -159,6 +162,11 @@ h1 {
 .endorsement-card-like:before {
     content: url('assets/heart.svg');
     margin-right: 2px;
-    color: black;
     vertical-align: middle;
+}
+
+.endorsement-card:hover {
+    transform: scale(1.1);
+    margin: 20px 0;
+    /* border-color:#28A9F1; */
 }
