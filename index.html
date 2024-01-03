@@ -1,11 +1,43 @@
 <!doctype html>
-<html>
-    <head><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css">
+<html lang="EN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css">
         <title>We are the Champions</title>
         <link rel="stylesheet" href="index.css">
     </head>
     <body>
-        <h1>We are the Champions</h1>
-        <script src="index.js"></script>
+        <div class="container">
+            <div id="form">
+                <img src="assets/freddie.png" alt="Freddie Mercury Logo" id="logo">
+
+                <h1>We are the Champions</h1>
+
+                <textarea name="textarea-endorsement" id="textarea-endorsement" placeholder="Write your endorsement here"></textarea>
+
+                <input type="text" name="input-from" id="input-from" placeholder="From">
+
+                <input type="text" name="input-to" id="input-to" placeholder="To">
+
+                <button id="publish-btn">Publish</button>
+            </div>
+
+            <div id="render">
+                <h2>- Endorsements -</h2>
+
+                <div class="endorsment-card">
+                    <p class="endorsment-card-to">To Leanne</p>
+                    <p class="endorsment-card-text">Leanne! Thank you so much for helping me with the March accounting. Saved so much time because of you! 💜 Frode</p>
+                    <div class="endorsment-card-footer">
+                        <p class="endorsment-card-from">From Frode</p>
+                        <p class="endorsment-card-like">❤️ 4</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <script src="index.js" type="module"></script>
     </body>
 </html>

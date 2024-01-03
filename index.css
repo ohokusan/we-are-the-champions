@@ -1,4 +1,19 @@
+/* Import fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Josefin+Sans:wght@700&display=swap');
+
 html, body {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
+}
+
+.container {
+    max-width: 320px;
+    padding: 50px 30px;
+}
+
+#logo {
+    width: 90px;
+    flex-shrink: 0;
+
 }
