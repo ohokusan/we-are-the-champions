@@ -1,6 +1,6 @@
 // javascript
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js"
-import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js"
+import { getDatabase, ref, push, onValue, update } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js"
 
 const appSettings = {
     databaseURL: "https://playground-a1cce-default-rtdb.europe-west1.firebasedatabase.app/"
@@ -45,7 +45,8 @@ function makeEndorsement() {
         sender: inputFromEl.value,
         recipient: inputToEl.value,
         message: textareaEndorsementEl.value,
-        likes: 0
+        likes: 0,
+        isLiked: false
     }
 
     return endorsementObj
@@ -118,17 +119,26 @@ function createNewEndorsementCard(endorsement) {
     newEndorsementCardEl.appendChild(newEndorsementCardTextEl);
     newEndorsementCardEl.appendChild(newEndorsementCardFooterEl);
 
+    newEndorsementCardEl.addEventListener("dblclick", function() {
+        // let exactLocationOfItemInDB = ref(database, `endorsement/${endorsement[0]}`)
+
+    
+        if (endorsement[1].isLiked == false) {
+            likesAmount += 1
+            update(ref(database, `endorsement/${endorsement[0]}`), {
+                isLiked: true,
+                likes: likesAmount
+              });
+        } else {
+            likesAmount -= 1
+            update(ref(database, `endorsement/${endorsement[0]}`), {
+                isLiked: false,
+                likes: likesAmount
+              });
+        }
+    })
+
+    console.log(endorsement)
+
     return newEndorsementCardEl;
 }
-
-
-    // newEndorsementCardEl.addEventListener("dblclick", function() {
-    //     let exactLocationOfItemInDB = ref(database, `shoppingList/${itemID}`)
-    //     // if (newEl.classList.contains("active")) {
-    //     //     remove(exactLocationOfItemInDB)
-    //     // } else {
-    //     //     newEl.classList.toggle("active");
-    //     //     newEl.textContent = "Remove?"
-    //     // }
-    //     remove(exactLocationOfItemInDB)
-    // })
