@@ -170,3 +170,12 @@ h1 {
     margin: 20px 0;
     /* border-color:#28A9F1; */
 }
+
+/* For desktops */
+@media only screen and (min-width: 600px) {
+    .container {
+        margin: 0 auto;
+        max-width: 900px;
+        padding: 50px 100px;
+    }
+}
