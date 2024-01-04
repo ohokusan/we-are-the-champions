@@ -15,6 +15,7 @@ const inputFromEl = document.querySelector('#input-from')
 const inputToEl = document.querySelector('#input-to')
 const publishBtn = document.querySelector('#publish-btn')
 const endorsementCardsEl = document.querySelector('#endorsement-cards')
+const userID = getOrCreateUserId()
 
 publishBtn.addEventListener("click", function() {
     let endorsement = makeEndorsement()
@@ -25,7 +26,7 @@ publishBtn.addEventListener("click", function() {
 onValue(endorsementInDB, function(snapshot) {
     if (snapshot.exists()) {
         let itemsArray = Object.entries(snapshot.val())
-        console.log(itemsArray)
+        // console.log(itemsArray)
         clearEndorsementCardsEl()
 
         for (let i = 0; i < itemsArray.length; i++) {
@@ -35,7 +36,7 @@ onValue(endorsementInDB, function(snapshot) {
             appendEndorsementToEndorsementCardsEl(currentEndorsement)
         }
     } else {
-        console.log("Issue")
+        // console.log("Issue")
     }
 }
 )
@@ -46,7 +47,8 @@ function makeEndorsement() {
         recipient: inputToEl.value,
         message: textareaEndorsementEl.value,
         likes: 0,
-        isLiked: false
+        // isLiked: false,
+        whoLiked: []
     }
 
     return endorsementObj
@@ -119,26 +121,47 @@ function createNewEndorsementCard(endorsement) {
     newEndorsementCardEl.appendChild(newEndorsementCardTextEl);
     newEndorsementCardEl.appendChild(newEndorsementCardFooterEl);
 
-    newEndorsementCardEl.addEventListener("dblclick", function() {
-        // let exactLocationOfItemInDB = ref(database, `endorsement/${endorsement[0]}`)
+//     newEndorsementCardEl.addEventListener("dblclick", function() {
+//         // let exactLocationOfItemInDB = ref(database, `endorsement/${endorsement[0]}`)
 
-    
-        if (endorsement[1].isLiked == false) {
-            likesAmount += 1
-            update(ref(database, `endorsement/${endorsement[0]}`), {
-                isLiked: true,
-                likes: likesAmount
-              });
+newEndorsementCardEl.addEventListener("dblclick", function() {
+    // Define the path to the whoLiked array in Firebase
+    let whoLikedRef = ref(database, `endorsement/${endorsement[0]}/whoLiked`);
+
+    // Retrieve the current whoLiked array from Firebase
+    onValue(whoLikedRef, (snapshot) => {
+        let whoLiked = snapshot.exists() ? snapshot.val() : [];
+
+        // Determine if the user has already liked the endorsement
+        let userIndex = whoLiked.indexOf(userID);
+
+        if (userIndex === -1) {
+            // User hasn't liked it yet, so add their ID to the array
+            whoLiked.push(userID);
         } else {
-            likesAmount -= 1
-            update(ref(database, `endorsement/${endorsement[0]}`), {
-                isLiked: false,
-                likes: likesAmount
-              });
+            // User has already liked it, so remove their ID from the array
+            whoLiked.splice(userIndex, 1);
         }
-    })
 
-    console.log(endorsement)
+        // Update the whoLiked array in Firebase
+        update(ref(database, `endorsement/${endorsement[0]}`), { whoLiked: whoLiked, likes: whoLiked.length });
 
-    return newEndorsementCardEl;
+        // Update the likes display
+        newEndorsementCardLikeEl.textContent = whoLiked.length;
+    }, {
+        onlyOnce: true // We only need to fetch the data once
+    });
+});
+
+// })
+    return newEndorsementCardEl
+}
+
+function getOrCreateUserId() {
+    let userId = localStorage.getItem('userId');
+    if (!userId) {
+        userId = 'user_' + (Math.floor(Math.random() * 10000000000)).toString(36)
+        localStorage.setItem('userId', userId);
+    }
+    return userId;
 }
