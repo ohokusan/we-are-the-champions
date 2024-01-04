@@ -29,7 +29,7 @@ onValue(endorsementInDB, function(snapshot) {
         // console.log(itemsArray)
         clearEndorsementCardsEl()
 
-        for (let i = 0; i < itemsArray.length; i++) {
+        for (let i = itemsArray.length - 1; i >= 0; i--) {
             let currentEndorsement = itemsArray[i]
             // console.log(currentEndorsement)
 
