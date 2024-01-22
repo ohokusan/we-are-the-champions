@@ -1,91 +1,106 @@
 // javascript
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js"
-import { getDatabase, ref, push, onValue, update } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js"
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+import {
+    getDatabase,
+    ref,
+    push,
+    onValue,
+    update,
+} from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
 
 const appSettings = {
-    databaseURL: "https://playground-a1cce-default-rtdb.europe-west1.firebasedatabase.app/"
-}
+    databaseURL:
+        "https://playground-a1cce-default-rtdb.europe-west1.firebasedatabase.app/",
+};
 
-const app = initializeApp(appSettings)
-const database = getDatabase(app)
-const endorsementInDB = ref(database, "endorsement")
+const app = initializeApp(appSettings);
+const database = getDatabase(app);
+const endorsementInDB = ref(database, "endorsement");
 
-const textareaEndorsementEl = document.querySelector("#textarea-endorsement")
-const inputFromEl = document.querySelector('#input-from')
-const inputToEl = document.querySelector('#input-to')
-const publishBtn = document.querySelector('#publish-btn')
-const endorsementCardsEl = document.querySelector('#endorsement-cards')
-const userID = getOrCreateUserId()
+const warningEl = document.querySelector(".warning");
+const textareaEndorsementEl = document.querySelector("#textarea-endorsement");
+const inputFromEl = document.querySelector("#input-from");
+const inputToEl = document.querySelector("#input-to");
+const publishBtn = document.querySelector("#publish-btn");
+const endorsementCardsEl = document.querySelector("#endorsement-cards");
+const userID = getOrCreateUserId();
 
-publishBtn.addEventListener("click", function() {
-    let endorsement = makeEndorsement()
-    push(endorsementInDB, endorsement)
-    clearForm()
-})
+publishBtn.addEventListener("click", function () {
+    let endorsement = makeEndorsement();
+    push(endorsementInDB, endorsement);
+    clearForm();
+});
 
-onValue(endorsementInDB, function(snapshot) {
+onValue(endorsementInDB, function (snapshot) {
     if (snapshot.exists()) {
-        let itemsArray = Object.entries(snapshot.val())
+        let itemsArray = Object.entries(snapshot.val());
         // console.log(itemsArray)
-        clearEndorsementCardsEl()
+        clearEndorsementCardsEl();
 
         for (let i = itemsArray.length - 1; i >= 0; i--) {
-            let currentEndorsement = itemsArray[i]
+            let currentEndorsement = itemsArray[i];
             // console.log(currentEndorsement)
 
-            appendEndorsementToEndorsementCardsEl(currentEndorsement)
+            appendEndorsementToEndorsementCardsEl(currentEndorsement);
         }
     } else {
         // console.log("Issue")
     }
-}
-)
+});
 
 function makeEndorsement() {
-    let endorsementObj = {
-        sender: inputFromEl.value,
-        recipient: inputToEl.value,
-        message: textareaEndorsementEl.value,
-        likes: 0,
-        // isLiked: false,
-        whoLiked: []
-    }
+    if (
+        textareaEndorsementEl.value.length >= 10 &&
+        textareaEndorsementEl.value != ""
+    ) {
+        let endorsementObj = {
+            sender: inputFromEl.value,
+            recipient: inputToEl.value,
+            message: textareaEndorsementEl.value,
+            likes: 0,
+            // isLiked: false,
+            whoLiked: [],
+        };
 
-    return endorsementObj
+        warningEl.textContent = "";
+        return endorsementObj;
+    } else {
+        warningEl.textContent =
+            "Error: Textarea should be at least 10 chars in length.";
+    }
 }
 
 function clearForm() {
-    textareaEndorsementEl.value = ""
-    inputFromEl.value = ""
-    inputToEl.value = ""
+    textareaEndorsementEl.value = "";
+    inputFromEl.value = "";
+    inputToEl.value = "";
 }
 
 function clearEndorsementCardsEl() {
-    endorsementCardsEl.innerHTML = ""
+    endorsementCardsEl.innerHTML = "";
 }
 
 function appendEndorsementToEndorsementCardsEl(endorsement) {
     // let endorsementID = endorsement[0]
-    let endorsementItem = endorsement
+    let endorsementItem = endorsement;
 
-    let newEndorsementCard = createNewEndorsementCard(endorsementItem)
+    let newEndorsementCard = createNewEndorsementCard(endorsementItem);
 
-    endorsementCardsEl.append(newEndorsementCard)
-
-
+    endorsementCardsEl.append(newEndorsementCard);
 }
 
-{/* <div class="endorsement-card">
+{
+    /* <div class="endorsement-card">
     <p class="endorsement-card-to">To Leanne</p>
     <p class="endorsement-card-text">Leanne! Thank you so much for helping me with the March accounting. Saved so much time because of you! 💜 Frode</p>
     <div class="endorsement-card-footer">
         <p class="endorsement-card-from">From Frode</p>
         <p class="endorsement-card-like">4</p>
     </div>
-</div> */}
+</div> */
+}
 
 function createNewEndorsementCard(endorsement) {
-
     // Assuming the second item in the array is an object with recipient, sender, and message keys.
     let recipientName = endorsement[1].recipient;
     let senderName = endorsement[1].sender;
@@ -121,47 +136,57 @@ function createNewEndorsementCard(endorsement) {
     newEndorsementCardEl.appendChild(newEndorsementCardTextEl);
     newEndorsementCardEl.appendChild(newEndorsementCardFooterEl);
 
-//     newEndorsementCardEl.addEventListener("dblclick", function() {
-//         // let exactLocationOfItemInDB = ref(database, `endorsement/${endorsement[0]}`)
+    //     newEndorsementCardEl.addEventListener("dblclick", function() {
+    //         // let exactLocationOfItemInDB = ref(database, `endorsement/${endorsement[0]}`)
 
-newEndorsementCardEl.addEventListener("dblclick", function() {
-    // Define the path to the whoLiked array in Firebase
-    let whoLikedRef = ref(database, `endorsement/${endorsement[0]}/whoLiked`);
+    newEndorsementCardEl.addEventListener("dblclick", function () {
+        // Define the path to the whoLiked array in Firebase
+        let whoLikedRef = ref(
+            database,
+            `endorsement/${endorsement[0]}/whoLiked`
+        );
 
-    // Retrieve the current whoLiked array from Firebase
-    onValue(whoLikedRef, (snapshot) => {
-        let whoLiked = snapshot.exists() ? snapshot.val() : [];
+        // Retrieve the current whoLiked array from Firebase
+        onValue(
+            whoLikedRef,
+            (snapshot) => {
+                let whoLiked = snapshot.exists() ? snapshot.val() : [];
 
-        // Determine if the user has already liked the endorsement
-        let userIndex = whoLiked.indexOf(userID);
+                // Determine if the user has already liked the endorsement
+                let userIndex = whoLiked.indexOf(userID);
 
-        if (userIndex === -1) {
-            // User hasn't liked it yet, so add their ID to the array
-            whoLiked.push(userID);
-        } else {
-            // User has already liked it, so remove their ID from the array
-            whoLiked.splice(userIndex, 1);
-        }
+                if (userIndex === -1) {
+                    // User hasn't liked it yet, so add their ID to the array
+                    whoLiked.push(userID);
+                } else {
+                    // User has already liked it, so remove their ID from the array
+                    whoLiked.splice(userIndex, 1);
+                }
 
-        // Update the whoLiked array in Firebase
-        update(ref(database, `endorsement/${endorsement[0]}`), { whoLiked: whoLiked, likes: whoLiked.length });
+                // Update the whoLiked array in Firebase
+                update(ref(database, `endorsement/${endorsement[0]}`), {
+                    whoLiked: whoLiked,
+                    likes: whoLiked.length,
+                });
 
-        // Update the likes display
-        newEndorsementCardLikeEl.textContent = whoLiked.length;
-    }, {
-        onlyOnce: true // We only need to fetch the data once
+                // Update the likes display
+                newEndorsementCardLikeEl.textContent = whoLiked.length;
+            },
+            {
+                onlyOnce: true, // We only need to fetch the data once
+            }
+        );
     });
-});
 
-// })
-    return newEndorsementCardEl
+    // })
+    return newEndorsementCardEl;
 }
 
 function getOrCreateUserId() {
-    let userId = localStorage.getItem('userId');
+    let userId = localStorage.getItem("userId");
     if (!userId) {
-        userId = 'user_' + (Math.floor(Math.random() * 10000000000)).toString(36)
-        localStorage.setItem('userId', userId);
+        userId = "user_" + Math.floor(Math.random() * 10000000000).toString(36);
+        localStorage.setItem("userId", userId);
     }
     return userId;
 }
